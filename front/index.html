@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Superdry Scrapping</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+	<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+	<div class="background-glow"></div>
+
+	<main class="app-shell">
+		<header class="hero">
+			<p class="eyebrow">Scraping a Superdry</p>
+			<h1>Superdry Consultas</h1>
+			<p class="subtitle">Consulta productos de hombres, mujeres o revisa disponibilidad por URL.</p>
+		</header>
+
+		<section class="controls">
+			<button id="btn-hombres" class="btn btn-primary">Cargar Hombres</button>
+			<button id="btn-mujer" class="btn btn-secondary">Cargar Mujeres</button>
+			<div class="custom-box">
+				<label for="url-input">URL personalizada</label>
+				<div class="input-row">
+					<input id="url-input" type="url" placeholder="https://www.superdry.com.co/..." />
+					<button id="btn-custom" class="btn btn-accent">Consultar</button>
+				</div>
+			</div>
+		</section>
+
+		<section id="status" class="status">Listo para consultar.</section>
+
+		<section id="results" class="results hidden">
+			<div class="results-header">
+				<h2 id="results-title">Resultados</h2>
+				<span id="results-count" class="pill"></span>
+			</div>
+			<div id="results-body"></div>
+		</section>
+	</main>
+
+	<script src="app.js"></script>
+</body>
+</html>

@@ -1,2 +1,4 @@
-requests
-beatuifulsoup4
+time
+playwright
+fastapi
+uvicorn
