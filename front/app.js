@@ -10,6 +10,99 @@ const btnHombres = document.getElementById("btn-hombres");
 const btnMujer = document.getElementById("btn-mujer");
 const btnCustom = document.getElementById("btn-custom");
 const urlInput = document.getElementById("url-input");
+const urlHistorySelectEl = document.getElementById("url-history-select");
+
+const CUSTOM_URL_HISTORY_KEY = "customUrlHistory";
+let urlHistoryFallback = [];
+
+function readStorageHistory() {
+	try {
+		const saved = JSON.parse(localStorage.getItem(CUSTOM_URL_HISTORY_KEY) || "[]");
+		if (Array.isArray(saved)) {
+			return saved;
+		}
+	} catch {
+		// Ignore localStorage read failures and try session/fallback.
+	}
+
+	try {
+		const savedSession = JSON.parse(sessionStorage.getItem(CUSTOM_URL_HISTORY_KEY) || "[]");
+		if (Array.isArray(savedSession)) {
+			return savedSession;
+		}
+	} catch {
+		// Ignore sessionStorage failures.
+	}
+
+	return urlHistoryFallback;
+}
+
+function writeStorageHistory(urls) {
+	urlHistoryFallback = urls;
+
+	try {
+		localStorage.setItem(CUSTOM_URL_HISTORY_KEY, JSON.stringify(urls));
+		return;
+	} catch {
+		// Fallback to session storage.
+	}
+
+	try {
+		sessionStorage.setItem(CUSTOM_URL_HISTORY_KEY, JSON.stringify(urls));
+	} catch {
+		// If all storage fails, keep in-memory fallback only.
+	}
+}
+
+function getSavedUrls() {
+	return readStorageHistory()
+		.filter((item) => typeof item === "string")
+		.map((item) => item.trim())
+		.filter(Boolean);
+}
+
+function renderUrlHistorySelect() {
+	const savedUrls = getSavedUrls();
+	const currentUrl = urlInput.value.trim();
+	urlHistorySelectEl.innerHTML = "";
+
+	const placeholder = document.createElement("option");
+	placeholder.value = "";
+	placeholder.textContent = "URLs consultadas anteriormente...";
+	urlHistorySelectEl.appendChild(placeholder);
+
+	if (currentUrl && !savedUrls.includes(currentUrl)) {
+		const currentOption = document.createElement("option");
+		currentOption.value = currentUrl;
+		currentOption.textContent = `${currentUrl} (actual)`;
+		urlHistorySelectEl.appendChild(currentOption);
+	}
+
+	savedUrls.forEach((url) => {
+		const option = document.createElement("option");
+		option.value = url;
+		option.textContent = url;
+		urlHistorySelectEl.appendChild(option);
+	});
+}
+
+function saveUrlToHistory(url) {
+	const normalizedUrl = url.trim();
+	if (!normalizedUrl) {
+		return;
+	}
+
+	const nextUrls = [normalizedUrl, ...getSavedUrls().filter((item) => item !== normalizedUrl)].slice(0, 12);
+	writeStorageHistory(nextUrls);
+	renderUrlHistorySelect();
+}
+
+function persistInputUrl() {
+	const typedUrl = urlInput.value.trim();
+	if (typedUrl) {
+		saveUrlToHistory(typedUrl);
+	}
+}
 
 function setStatus(message, isError = false) {
 	statusEl.textContent = message;
@@ -111,6 +204,7 @@ async function consultarPersonalizado() {
 		return;
 	}
 
+	saveUrlToHistory(url);
 	setStatus("Consultando stock personalizado...");
 	try {
 		const endpoint = `/personalizado?url=${encodeURIComponent(url)}`;
@@ -126,8 +220,28 @@ btnHombres.addEventListener("click", cargarProductosHombres);
 btnMujer.addEventListener("click", cargarProductosMujer);
 btnCustom.addEventListener("click", consultarPersonalizado);
 
+urlInput.addEventListener("change", persistInputUrl);
+
+urlInput.addEventListener("blur", persistInputUrl);
+
 urlInput.addEventListener("keydown", (event) => {
 	if (event.key === "Enter") {
 		consultarPersonalizado();
 	}
 });
+
+urlInput.addEventListener("input", () => {
+	renderUrlHistorySelect();
+});
+
+urlHistorySelectEl.addEventListener("change", () => {
+	const selectedUrl = urlHistorySelectEl.value;
+	if (!selectedUrl) {
+		return;
+	}
+
+	urlInput.value = selectedUrl;
+	urlInput.focus();
+});
+
+renderUrlHistorySelect();

@@ -25,7 +25,12 @@
 			<div class="custom-box">
 				<label for="url-input">URL personalizada</label>
 				<div class="input-row">
-					<input id="url-input" type="url" placeholder="https://www.superdry.com.co/..." />
+					<div class="url-field">
+						<input id="url-input" type="url" autocomplete="off" placeholder="https://www.superdry.com.co/..." />
+						<select id="url-history-select" class="url-history-select" aria-label="URLs consultadas anteriormente">
+							<option value="">URLs consultadas anteriormente...</option>
+						</select>
+					</div>
 					<button id="btn-custom" class="btn btn-accent">Consultar</button>
 				</div>
 			</div>

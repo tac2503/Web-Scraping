@@ -40,7 +40,7 @@ def obtener_stock_producto(url_producto):
                 clases = btn.get_attribute("class") or ""
 
                 if "unavailable" in clases:
-                    stock[clave] = "Agotado"
+                    stock[clave] = "Agotado"    
                 else:
                     try:
                         btn.click()

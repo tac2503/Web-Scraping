@@ -94,13 +94,29 @@ body {
 	gap: 10px;
 }
 
-.input-row input {
+.url-field {
 	flex: 1;
+	min-width: 0;
+}
+
+.url-field input {
+	width: 100%;
 	padding: 11px 12px;
 	border-radius: 12px;
 	border: 1px solid var(--line);
 	font-family: "IBM Plex Mono", monospace;
 	font-size: 0.9rem;
+}
+
+.url-history-select {
+	margin-top: 8px;
+	width: 100%;
+	padding: 10px 12px;
+	border: 1px solid var(--line);
+	border-radius: 12px;
+	background: #fffefb;
+	font-family: "IBM Plex Mono", monospace;
+	font-size: 0.88rem;
 }
 
 .btn {
@@ -240,5 +256,9 @@ body {
 
 	.input-row {
 		flex-direction: column;
+	}
+
+	.url-field {
+		width: 100%;
 	}
 }
